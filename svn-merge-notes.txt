@@ -1,0 +1,33 @@
+Skipped merges:
+
+Revision: 13642
+
+Author: marquard@ched.uct.ac.za
+
+Date: 2:49:39 PM, Monday, August 14, 2006
+
+Message:
+
+SAK-5882 Separate labels for Search box heading and button
+
+----
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages.properties
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages_ca.properties
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages_es.properties
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages_fr_CA.properties
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages_nl.properties
+
+Modified : /help/trunk/help-tool/src/bundle/org/sakaiproject/tool/help/bundle/Messages_sv.properties
+
+Modified : /help/trunk/help-tool/src/webapp/search/main.jsp
+
+
+
+
+
+
