@@ -81,11 +81,11 @@ public class HelpFrameSetRender extends Renderer
 
     helpWindowTitle = ServerConfigurationService.getString("ui.service") + " Help";
     
-    writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+    writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
     writer.write("<html><head><title>" + helpWindowTitle + "</title></head>\n");
     writer.write("<FRAMESET cols=\"30%, 70%\"><FRAMESET rows=\"250, 350\">");
-    writer.write("<FRAME src=" + searchToolUrl + " name=\"search\"/>");
-    writer.write("<FRAME src=" + tocToolUrl + " name=\"toc\"/>");
+    writer.write("<FRAME src=\"" + searchToolUrl + "\" name=\"search\">");
+    writer.write("<FRAME src=\"" + tocToolUrl + "\" name=\"toc\">");
     writer.write("</FRAMESET>\n");
     
     Application app = context.getApplication();
@@ -93,10 +93,10 @@ public class HelpFrameSetRender extends Renderer
     HelpManager manager  = (HelpManager) binding.getValue(context);    
                   
     if(manager.getWelcomePage() == null) {
-    	writer.write("<FRAME src=\"" + welcomepage + "\" name=\"content\"/>");
+    	writer.write("<FRAME src=\"" + welcomepage + "\" name=\"content\">");
     }
     else {
-      writer.write("<FRAME src=\"content.hlp?docId=" + manager.getWelcomePage() + "\" name=\"content\"/>");             
+      writer.write("<FRAME src=\"content.hlp?docId=" + manager.getWelcomePage() + "\" name=\"content\">");             
     }
                                         
     writer.write("</FRAMESET></html>\n");
