@@ -1,0 +1,21 @@
+# Help collections from trunk
+announcement-help	https://source.sakaiproject.org/svn/announcement/trunk/announcement-help
+assignment-help	https://source.sakaiproject.org/svn/assignment/trunk/assignment-help
+calendar-help	https://source.sakaiproject.org/svn/calendar/trunk/calendar-help
+chat-help	https://source.sakaiproject.org/svn/chat/trunk/chat-help
+content-help	https://source.sakaiproject.org/svn/content/trunk/content-help
+discussion-help	https://source.sakaiproject.org/svn/discussion/trunk/discussion-help
+gradebook-help	https://source.sakaiproject.org/svn/gradebook/trunk/help
+help-help	https://source.sakaiproject.org/svn/help/trunk/help
+mailarchive-help	https://source.sakaiproject.org/svn/mailarchive/trunk/mailarchive-help
+messageforums-help	https://source.sakaiproject.org/svn/msgcntr/trunk/messageforums-help
+podcasts-help	https://source.sakaiproject.org/svn/podcasts/trunk/help
+postem-help	https://source.sakaiproject.org/svn/postem/trunk/postem-help
+roster-help	https://source.sakaiproject.org/svn/roster/trunk/roster-help
+samigo-help	https://source.sakaiproject.org/svn/sam/trunk/samigo-help
+sections-help	https://source.sakaiproject.org/svn/sections/trunk/help
+site-help	https://source.sakaiproject.org/svn/site/trunk/site-help
+site-manage-help	https://source.sakaiproject.org/svn/site-manage/trunk/site-manage-help
+syllabus-help	https://source.sakaiproject.org/svn/syllabus/trunk/help
+web-help	https://source.sakaiproject.org/svn/web/trunk/web-help
+
