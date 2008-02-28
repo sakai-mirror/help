@@ -17,4 +17,5 @@ site-help	https://source.sakaiproject.org/svn/site/trunk/site-help
 site-manage-help	https://source.sakaiproject.org/svn/site-manage/trunk/site-manage-help
 syllabus-help	https://source.sakaiproject.org/svn/syllabus/trunk/help
 web-help	https://source.sakaiproject.org/svn/web/trunk/web-help
+help-images     https://source.sakaiproject.org/svn/help/trunk/help-tool/src/webapp/TOCDisplay/image
 
