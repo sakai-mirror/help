@@ -141,4 +141,8 @@
 		</property>
 	</bean>
 	
+	<bean id="org.sakaiproject.help.logic.entity.HelpEntityProvider"
+		class="org.sakaiproject.help.impl.entity.HelpEntityProviderImpl">
+	</bean>
+	
 </beans>
