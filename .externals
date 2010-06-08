@@ -1,0 +1,20 @@
+# Help collections from branches/sakai_2-6-x
+announcement-help	https://source.sakaiproject.org/svn/announcement/branches/sakai_2-6-x/announcement-help
+assignment-help	https://source.sakaiproject.org/svn/assignment/branches/sakai_2-6-x/assignment-help
+calendar-help	https://source.sakaiproject.org/svn/calendar/branches/sakai_2-6-x/calendar-help
+chat-help	https://source.sakaiproject.org/svn/chat/branches/sakai_2-6-x/chat-help
+content-help	https://source.sakaiproject.org/svn/content/branches/sakai_2-6-x/content-help
+gradebook-help	https://source.sakaiproject.org/svn/gradebook/branches/sakai_2-6-x/help
+help-help	https://source.sakaiproject.org/svn/help/branches/sakai_2-6-x/help
+mailarchive-help	https://source.sakaiproject.org/svn/mailarchive/branches/sakai_2-6-x/mailarchive-help
+messageforums-help	https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-6-x/messageforums-help
+podcasts-help	https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-6-x/help
+postem-help	https://source.sakaiproject.org/svn/postem/branches/sakai_2-6-x/postem-help
+roster-help	https://source.sakaiproject.org/svn/roster/branches/sakai_2-6-x/roster-help
+samigo-help	https://source.sakaiproject.org/svn/sam/branches/sakai_2-6-x/samigo-help
+sections-help	https://source.sakaiproject.org/svn/sections/branches/sakai_2-6-x/help
+site-help	https://source.sakaiproject.org/svn/site/branches/sakai_2-6-x/site-help
+site-manage-help	https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-6-x/site-manage-help
+syllabus-help	https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-6-x/help
+web-help	https://source.sakaiproject.org/svn/web/branches/sakai_2-6-x/web-help
+help-images	https://source.sakaiproject.org/svn/help/branches/sakai_2-6-x/help-tool/src/webapp/TOCDisplay/image
