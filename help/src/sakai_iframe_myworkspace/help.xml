@@ -2,11 +2,17 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+   <bean id="workspaceAbout" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>arfy</value></property>
+      <property name="name"><value>My Workspace</value></property>
+      <property name="location"><value>/sakai_iframe_myworkspace/arfy.html</value></property>
+      <property name="defaultForTool"><value>sakai.iframe.myworkspace</value></property>
+   </bean>
+
    <bean id="workspaceOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>aqzy</value></property>
       <property name="name"><value>Workspace Overview</value></property>
       <property name="location"><value>/sakai_iframe_myworkspace/aqzy.html</value></property>
-      <property name="defaultForTool"><value>sakai.iframe.myworkspace</value></property>
    </bean>
    
    <bean id="customizeTabs" class="org.sakaiproject.component.app.help.model.ResourceBean">
@@ -27,12 +33,6 @@
       <property name="location"><value>/sakai_iframe_myworkspace/arbj.html</value></property>
    </bean>
    
-   <bean id="searchUserProfile" class="org.sakaiproject.component.app.help.model.ResourceBean">
-      <property name="docId"><value>ardb</value></property>
-      <property name="name"><value>Search User's Profile</value></property>
-      <property name="location"><value>/sakai_iframe_myworkspace/ardb.html</value></property>
-   </bean>
-   
    <bean id="setMOD" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>arcw</value></property>
       <property name="name"><value>Set Message of the Day Options</value></property>
@@ -45,24 +45,23 @@
       <property name="location"><value>/sakai_iframe_myworkspace/arbc.html</value></property>
    </bean>
    
-   <bean id="modifyProfile" class="org.sakaiproject.component.app.help.model.ResourceBean">
-      <property name="docId"><value>aqze</value></property>
-      <property name="name"><value>Modify Profile</value></property>
-      <property name="location"><value>/sakai_iframe_myworkspace/aqze.html</value></property>
-      <property name="defaultForTool"><value>sakai.profile</value></property>
-   </bean>
-   
    <bean id="changeWorkspace" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>arei</value></property>
       <property name="name"><value>Change My Workspace Information Appearance</value></property>
       <property name="location"><value>/sakai_iframe_myworkspace/arei.html</value></property>
    </bean>
    
+   <bean id="membershipAbout" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>arfp</value></property>
+      <property name="name"><value>Membership</value></property>
+      <property name="location"><value>/sakai_iframe_myworkspace/arfp.html</value></property>
+      <property name="defaultForTool"><value>sakai.membership</value></property>
+   </bean>
+
    <bean id="membershipOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>arel</value></property>
       <property name="name"><value>Membership Overview</value></property>
       <property name="location"><value>/sakai_iframe_myworkspace/arel.html</value></property>
-      <property name="defaultForTool"><value>sakai.membership</value></property>
    </bean>
    
    <bean id="joinSites" class="org.sakaiproject.component.app.help.model.ResourceBean">
@@ -71,11 +70,17 @@
       <property name="location"><value>/sakai_iframe_myworkspace/arcj.html</value></property>
    </bean>
    
+   <bean id="worksiteSetupAbout" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>arfr</value></property>
+      <property name="name"><value>Worksite Setup</value></property>
+      <property name="location"><value>/sakai_iframe_myworkspace/arfr.html</value></property>
+      <property name="defaultForTool"><value>sakai.sitesetup</value></property>
+   </bean>
+
    <bean id="worksiteSetupOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>arer</value></property>
       <property name="name"><value>Worksite Setup Overview</value></property>
       <property name="location"><value>/sakai_iframe_myworkspace/arer.html</value></property>
-      <property name="defaultForTool"><value>sakai.sitesetup</value></property>
    </bean>
    
    <bean id="worksiteSetupAddParticipants" class="org.sakaiproject.component.app.help.model.ResourceBean">
@@ -114,11 +119,23 @@
       <property name="location"><value>/sakai_iframe_myworkspace/aret.html</value></property>
    </bean>
    
+   <bean id="preferencesAbout" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>argi</value></property>
+      <property name="name"><value>Preferences</value></property>
+      <property name="location"><value>/sakai_iframe_myworkspace/argi.html</value></property>
+      <property name="defaultForTool"><value>sakai.preferences</value></property>
+   </bean>
+
    <bean id="preferencesOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
       <property name="docId"><value>arce</value></property>
       <property name="name"><value>Preferences Overview</value></property>
       <property name="location"><value>/sakai_iframe_myworkspace/arce.html</value></property>
-      <property name="defaultForTool"><value>sakai.preferences</value></property>
+   </bean>
+
+   <bean id="adjustTimezone" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>auay</value></property>
+      <property name="name"><value>Adjusting the time zone</value></property>
+      <property name="location"><value>/sakai_iframe_myworkspace/auay.html</value></property>
    </bean>
 
    <bean id="privacyStatus" class="org.sakaiproject.component.app.help.model.ResourceBean">
@@ -154,14 +171,15 @@
                <property name="name"><value>My Workspace</value></property>
                <property name="resources">
                   <list>
+                     <ref bean="workspaceAbout"/>
                      <ref bean="workspaceOverview"/>
                      <ref bean="clickBackButton"/>
-                     <ref bean="modifyProfile"/>
-                     <ref bean="searchUserProfile"/>
                      <ref bean="setMOD"/>
                      <ref bean="changeWorkspace"/>
+                     <ref bean="membershipAbout"/>
                      <ref bean="membershipOverview"/>
                      <ref bean="joinSites"/>
+                     <ref bean="worksiteSetupAbout"/>
                      <ref bean="worksiteSetupOverview"/>
                      <ref bean="addTools"/>
                      <ref bean="worksiteSetupAddParticipants"/>
@@ -170,7 +188,9 @@
                      <ref bean="worksiteSetupPublish"/>
                      <ref bean="worksiteSetupChangeRoles"/>
                      <ref bean="worksiteSetupEditInfo"/>
+                     <ref bean="preferencesAbout"/>
                      <ref bean="preferencesOverview"/>
+                     <ref bean="adjustTimezone"/>
                      <ref bean="changeNotificationPreferences"/>
                      <ref bean="customizeTabs"/>
                      <ref bean="privacyStatus"/>
