@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.osedu.org/licenses/ECL-2.0
+ *       http://www.opensource.org/licenses/ECL-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -156,7 +156,7 @@ public interface HelpManager
    * @param session
    * @return map of resources keyed by active contexts
    */
-  public Map getResourcesForActiveContexts(Map session);
+  public Map<String, Set<Resource>> getResourcesForActiveContexts(Map session);
 
   /**
    *
@@ -164,7 +164,7 @@ public interface HelpManager
    * @return set of resources found by searching with the supplied query.
    * @throws RuntimeException - if query can't be parsed
    */
-  public Set searchResources(String query) throws RuntimeException;
+  public Set<Resource> searchResources(String query) throws RuntimeException;
 
   /**
    * get table of contents of manager

@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.osedu.org/licenses/ECL-2.0
+ *       http://www.opensource.org/licenses/ECL-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -52,6 +51,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -91,10 +91,9 @@ import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.util.StringUtil;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
@@ -323,14 +322,13 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 */
 	public Map getResourcesForActiveContexts(Map session)
 	{
-		Map resourceMap = new HashMap();
-		List activeContexts = getActiveContexts(session);
-		for (Iterator i = activeContexts.iterator(); i.hasNext();)
+		Map<String, Set<Resource>> resourceMap = new HashMap<String, Set<Resource>>();
+		List<String> activeContexts = getActiveContexts(session);
+		for(String context : activeContexts)
 		{
-			String context = (String) i.next();
 			try
 			{
-				Set resources = searchResources(new TermQuery(new Term("context", "\""
+				Set<Resource> resources = searchResources(new TermQuery(new Term("context", "\""
 						+ context + "\"")));
 				if (resources != null && resources.size() > 0)
 				{
@@ -348,7 +346,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	/**
 	 * @see org.sakaiproject.api.app.help.HelpManager#searchResources(java.lang.String)
 	 */
-	public Set searchResources(String queryStr)
+	public Set<Resource> searchResources(String queryStr)
 	{
 		initialize();
 
@@ -479,7 +477,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 * Get entire Collection of Resources.
 	 * @return collection of resources
 	 */
-	protected Collection getResources()
+	protected Collection<Resource> getResources()
 	{
 		return getHibernateTemplate().loadAll(ResourceBean.class);
 	}
@@ -514,15 +512,24 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		Document doc = new Document();
 		if (resource.getContexts() != null)
 		{
-			for (Iterator<String> i = resource.getContexts().iterator(); i.hasNext();)
+			for (String context : resource.getContexts())
 			{
-				//doc.add(Field.Keyword("context", "\"" + ((String) i.next()) + "\""));
-				doc.add(new Field("context", "\"" + ((String) i.next()) + "\"", Field.Store.YES, Field.Index.NOT_ANALYZED));
+				doc.add(new Field("context", "\"" + context + "\"", Field.Store.YES, Field.Index.NOT_ANALYZED));
 			}
 		}
 
 		URL urlResource;
 		URLConnection urlConnection = null;
+		//For local file override
+		
+		String sakaiHomePath = serverConfigurationService.getSakaiHomePath();
+  		String localHelpPath = sakaiHomePath+serverConfigurationService.getString("help.localpath","/help/");
+		File localFile = new File(localHelpPath+resource.getLocation());
+		boolean localFileIsFile = false;
+		if(localFile.isFile()) { 
+			LOG.debug("Local help file overrides: "+resource.getLocation());
+			localFileIsFile = true;
+		}
 		StringBuilder sb = new StringBuilder();
 		if (resource.getLocation() == null || resource.getLocation().startsWith("/"))
 		{
@@ -562,8 +569,14 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 			}
 			else
 			{
+				// Add the home folder file reading here
+				if(localFileIsFile) { 
+					urlResource = localFile.toURI().toURL();
+				}
+				else {
 				// handle classpath location
-				urlResource = getClass().getResource(resource.getLocation());
+					urlResource = getClass().getResource(resource.getLocation());
+				}
 			}
 		}
 		else
@@ -578,8 +591,11 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		}
 
 		if (resource.getLocation() != null){
-			// doc.add(Field.Keyword("location", resource.getLocation()));
-			doc.add(new Field("location", resource.getLocation(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+			String resLocation = resource.getLocation();
+			if(localFileIsFile) { 
+				resLocation = localFile.getPath();
+			}
+			doc.add(new Field("location", resLocation, Field.Store.YES, Field.Index.NOT_ANALYZED));
 		}
 
 
@@ -753,19 +769,14 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 */
 	private void indexRecursive(IndexWriter indexWriter, Set<Category> categories)
 	{
-		Iterator<Category> i = categories.iterator();
-		while (i.hasNext())
+		for (Category category: categories)
 		{
-			Category category = (Category) i.next();
-			Set<ResourceBean> resourcesList = category.getResources();
+			Set<Resource> resourcesList = category.getResources();
 
-			for (Iterator<ResourceBean> resourceIterator = resourcesList.iterator(); resourceIterator
-			.hasNext();)
-			{
-				ResourceBean resource = (ResourceBean) resourceIterator.next();
+			for (Resource resource : resourcesList) {
 				try
 				{
-					Document doc = getDocument(resource);
+					Document doc = getDocument((ResourceBean)resource);
 					if (doc != null)
 					{
 						indexWriter.addDocument(doc);
@@ -784,7 +795,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 				}
 			}
 
-			Set subCategories = category.getCategories();
+			Set<Category> subCategories = category.getCategories();
 			indexRecursive(indexWriter, subCategories);
 		}
 	}
@@ -793,20 +804,15 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 * Store the mapping of Categories and Resources
 	 * @param categories
 	 */
-	private void storeRecursive(Set categories)
+	private void storeRecursive(Set<Category> categories)
 	{
-		Iterator<Category> i = categories.iterator();
-		while (i.hasNext())
+		for(Category category: categories)
 		{
-			Category category = (Category) i.next();
-
 			Set<Resource> resourcesList = category.getResources();
 			category.setResources(null);
 
-			for (Iterator<Resource> resourceIterator = resourcesList.iterator(); resourceIterator
-			.hasNext();)
+			for (Resource resource: resourcesList)
 			{
-				Resource resource = (Resource) resourceIterator.next();
 				resource.setDocId(resource.getDocId().toLowerCase());
 				resource.setCategory(category);
 			}
@@ -814,7 +820,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 			category.setResources(resourcesList);
 			this.storeCategory(category);
 
-			Set subCategories = category.getCategories();
+			Set<Category> subCategories = category.getCategories();
 			storeRecursive(subCategories);
 		}
 	}
@@ -1011,9 +1017,8 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		}
 
 		// Create lucene indexes for each toc (which key is either a locale or 'default')
-		for (Iterator<String> j = toc.keySet().iterator(); j.hasNext();)
+		for (String key : toc.keySet())
 		{
-			String key = (String) j.next();
 			String luceneIndexPath = LUCENE_INDEX_PATH + File.separator + key;
 			TableOfContentsBean currentToc = toc.get(key);
 
@@ -1059,7 +1064,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 */
 	public void registerExternalHelpContent(String helpFile)
 	{
-		Set categories = new TreeSet();
+		Set<Category> categories = new TreeSet<Category>();
 		URL urlResource = null;
 		InputStream ism = null;
 		BufferedInputStream bis = null;
@@ -1162,28 +1167,66 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		URL urlResource = null;
 		String classpathUrl = null;
 
+	    String sakaiHomePath = serverConfigurationService.getSakaiHomePath();
+	    String localHelpPath = sakaiHomePath+serverConfigurationService.getString("help.localpath","/help/");
+	    
+	    File localFile = null;
+	    
 		// find default help file
 		if ( locale.equals(DEFAULT_LOCALE) ) {
 			classpathUrl = path + "/" + HELP_BASENAME + ".xml";
-			urlResource = getClass().getResource(classpathUrl);
+			
+			localFile = new File(localHelpPath+classpathUrl);
+			if(localFile.isFile())
+				try {
+					urlResource = localFile.toURI().toURL();
+				} catch (MalformedURLException e) {
+					urlResource = getClass().getResource(classpathUrl);
+				}
+			else 
+				urlResource = getClass().getResource(classpathUrl);
 		}
 
 		// find localized help file
 		else {
 			classpathUrl = path + "/" + HELP_BASENAME + "_" + locale + ".xml";
-			urlResource = getClass().getResource(classpathUrl);
+			localFile = new File(localHelpPath+classpathUrl);
+			if(localFile.isFile()) 
+				try {
+					urlResource = localFile.toURI().toURL();
+				} catch (MalformedURLException e) {
+					urlResource = getClass().getResource(classpathUrl);
+				}
+			else 
+				urlResource = getClass().getResource(classpathUrl);
 
 			// If language/region help file not found, look for language-only help file
 			if ( urlResource == null ) {
 				Locale nextLocale = getLocaleFromString(locale);
 				classpathUrl = path + "/" + HELP_BASENAME + "_" + nextLocale.getLanguage() + ".xml";
-				urlResource = getClass().getResource(classpathUrl);
+				localFile = new File(localHelpPath+classpathUrl);
+				if(localFile.isFile()) 
+					try {
+						urlResource = localFile.toURI().toURL();
+					} catch (MalformedURLException e) {
+						urlResource = getClass().getResource(classpathUrl);
+					}
+				else 	
+					urlResource = getClass().getResource(classpathUrl);
 			}
 
 			// If language-only help file not found, look for default help file
 			if ( urlResource == null ) {
 				classpathUrl = path + "/" + HELP_BASENAME + ".xml";
-				urlResource = getClass().getResource(classpathUrl);
+				localFile = new File(localHelpPath+classpathUrl);
+				if(localFile.isFile()) 
+					try {
+						urlResource = localFile.toURI().toURL();
+					} catch (MalformedURLException e) {
+						urlResource = getClass().getResource(classpathUrl);
+					}
+				else 
+					urlResource = getClass().getResource(classpathUrl);
 			}
 		}
 
@@ -1196,7 +1239,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 			try
 			{
 				org.springframework.core.io.Resource resource =
-					new ClassPathResource(classpathUrl);  
+					new UrlResource(urlResource);  
 				BeanFactory beanFactory = new XmlBeanFactory(resource);
 				TableOfContents tocTemp = (TableOfContents) beanFactory.getBean(TOC_API);
 				Set<Category> categories = tocTemp.getCategories();
@@ -1231,24 +1274,20 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		Set<Tool> toolSet = toolManager.findTools(null, null);
 
 		// find out what we want to ignore
-		List hideHelp = Arrays.asList(StringUtil.split(serverConfigurationService.getString("help.hide"), ","));
+		List<String> hideHelp = Arrays.asList(StringUtils.split(serverConfigurationService.getString("help.hide"), ","));
 
-		for (Iterator<Tool> i = toolSet.iterator(); i.hasNext();)
-		{
-			Tool tool = (Tool) i.next();
+		for (Tool tool : toolSet) {
 			if (tool != null && tool.getId() != null && !hideHelp.contains(tool.getId()))
 			{
 				String[] extraCollections = {};
 				String toolHelpCollections = tool.getRegisteredConfig().getProperty(TOOLCONFIG_HELP_COLLECTIONS);
 
 				if (toolHelpCollections != null)
-					extraCollections = StringUtil.split(toolHelpCollections, ",");
+					extraCollections = StringUtils.split(toolHelpCollections, ",");
 
 				// Loop throughout the locales list
-				for (Iterator<String> j = locales.iterator(); j.hasNext();)
+				for (String locale : locales)
 				{
-					String locale = (String) j.next();
-
 					// Add localized tool helps
 					addToolHelp("/" + tool.getId().toLowerCase().replaceAll("\\.", "_"), locale);
 
@@ -1262,16 +1301,13 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 		}
 
 		// Sort the help topics for each locale
-		for (Iterator<String> j = locales.iterator(); j.hasNext();)
-		{
-			String locale = (String) j.next();
-
+		for (String locale : locales) {
 			TableOfContentsBean localizedToc = toc.get(locale);
 
 			// Sort this localized toc categories with a TreeSet
 			if (localizedToc != null) {
-				Set sortedCategories = new TreeSet();		    
-				Set categories = localizedToc.getCategories();
+				Set<Category> sortedCategories = new TreeSet<Category>();		    
+				Set<Category> categories = localizedToc.getCategories();
 				sortedCategories.addAll(categories);
 				localizedToc.setCategories(sortedCategories);
 			}
@@ -1286,7 +1322,7 @@ public class HelpManagerImpl extends HibernateDaoSupport implements HelpManager
 	 * @param n
 	 * @param category
 	 */
-	public void recursiveExternalReg(Node n, Category category, Set categories)
+	public void recursiveExternalReg(Node n, Category category, Set<Category> categories)
 	{
 
 		if (n == null)
